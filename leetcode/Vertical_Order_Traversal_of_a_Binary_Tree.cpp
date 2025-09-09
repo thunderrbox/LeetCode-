@@ -12,34 +12,52 @@
 class Solution {
 public:
     vector<vector<int>> verticalTraversal(TreeNode* root) {
-        map<int, map<int, multiset<int>>> mp;
+        // Vector to store (col, row, val)
+        vector<tuple<int,int,int>> nodes;
+
+        // BFS queue → (node, col, row)
         queue<pair<TreeNode*, pair<int,int>>> q;
         q.push({root, {0, 0}});
-        
+
         while(!q.empty()){
-            auto p = q.front();
-            q.pop();
+            auto p = q.front(); q.pop();
             TreeNode* node = p.first;
-            int i = p.second.first;   // vertical
-            int j = p.second.second;  // level
-            mp[i][j].insert(node->val);
-            
-            if(node->left){
-                q.push({node->left,{i - 1, j + 1}});
-            }
-            if(node->right){
-                q.push({node->right, {i + 1, j + 1}});
-            }
+            int col = p.second.first;   // horizontal distance (x-axis)
+            int row = p.second.second;  // level (y-axis)
+
+            // Store the node info
+            nodes.push_back({col, row, node->val});
+
+            // Left child → col-1, row+1
+            if(node->left) 
+                q.push({node->left, {col - 1, row + 1}});
+
+            // Right child → col+1, row+1
+            if(node->right) 
+                q.push({node->right, {col + 1, row + 1}});
         }
 
+        // Sort by col first, then row, then value
+        sort(nodes.begin(), nodes.end(), [](auto &a, auto &b){
+            if(get<0>(a) != get<0>(b)) return get<0>(a) < get<0>(b); // col
+            if(get<1>(a) != get<1>(b)) return get<1>(a) < get<1>(b); // row
+            return get<2>(a) < get<2>(b); // value
+        });
+
+        // Group values by column
         vector<vector<int>> ans;
-        for(auto& k : mp){
-            vector<int> nums;
-            for(auto &l : k.second){
-                nums.insert(nums.end(), l.second.begin(), l.second.end());
+        int prevCol = INT_MIN;
+        for(auto &t : nodes){
+            int col = get<0>(t), val = get<2>(t);
+
+            // Start new column if col changes
+            if(col != prevCol){
+                ans.push_back({});
+                prevCol = col;
             }
-            ans.push_back(nums);
+            ans.back().push_back(val);
         }
+
         return ans;
     }
 };
