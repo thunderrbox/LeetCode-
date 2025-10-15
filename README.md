@@ -1,2 +1,4 @@
 # LeetCode-
-Leetcode Solutions of DSA
+Leetcode Problem Solutions of DSA question 
+Solution of potd..
+
