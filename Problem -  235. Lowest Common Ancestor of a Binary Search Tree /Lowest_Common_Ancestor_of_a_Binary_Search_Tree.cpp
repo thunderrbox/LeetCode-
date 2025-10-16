@@ -11,47 +11,47 @@
 /**
  * Intuition:
  * ------------
- * This problem asks for the Lowest Common Ancestor (LCA) of two nodes in a Binary Search Tree (BST).
+ * In a Binary Search Tree (BST):
+ *   - All values in the left subtree are smaller than the current node.
+ *   - All values in the right subtree are larger than the current node.
  * 
- * In a BST, for every node:
- *      -> All nodes in the left subtree have values smaller than the current node's value.
- *      -> All nodes in the right subtree have values larger than the current node's value.
+ * The Lowest Common Ancestor (LCA) of two nodes p and q is the node where
+ * the paths to p and q diverge — that is, one node lies in the left subtree,
+ * and the other lies in the right subtree.
  * 
- * Using this property, we can efficiently find the LCA without exploring the entire tree.
+ * Approach (Iterative):
+ * ----------------------
+ * 1. Start from the root.
+ * 2. If both p and q are greater than root, move to the right subtree.
+ * 3. If both p and q are smaller than root, move to the left subtree.
+ * 4. Otherwise, the current root is the split point → return root.
  * 
- * Logic:
- * -------
- * 1. If the current node (root) is NULL, return NULL (base case).
- * 2. If the current node is equal to either p or q, then it is part of the LCA, so return it.
- * 3. If both p and q have values greater than root->val,
- *        → both are in the right subtree → move to root->right.
- * 4. If both p and q have values smaller than root->val,
- *        → both are in the left subtree → move to root->left.
- * 5. Otherwise, p and q lie in different subtrees,
- *        → the current root is the split point → return root.
- * 
- * This approach uses BST properties to skip irrelevant parts of the tree, making it very efficient.
+ * This method avoids recursion, saving stack space.
  */
 
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // Base Case: if root is null or matches one of the nodes
-        if (root == nullptr || root == p || root == q) {
-            return root;
+        // Base check
+        if (root == nullptr) return nullptr;
+
+        // Traverse until LCA is found
+        while (root != nullptr) {
+            // If both nodes are greater than current node, move right
+            if (p->val > root->val && q->val > root->val) {
+                root = root->right;
+            }
+            // If both nodes are smaller than current node, move left
+            else if (p->val < root->val && q->val < root->val) {
+                root = root->left;
+            }
+            // Otherwise, we have found the split point (LCA)
+            else {
+                return root;
+            }
         }
 
-        // If both p and q are greater than root, LCA must be in right subtree
-        if (root->val < p->val && root->val < q->val) {
-            return lowestCommonAncestor(root->right, p, q);
-        }
-        // If both p and q are smaller than root, LCA must be in left subtree
-        else if (root->val > p->val && root->val > q->val) {
-            return lowestCommonAncestor(root->left, p, q);
-        }
-
-        // If one lies on the left and the other on the right, current node is LCA
-        return root;
+        return nullptr; // Should never reach here if p and q exist in BST
     }
 };
 
@@ -60,11 +60,9 @@ public:
  * ---------------------
  * Time Complexity:  O(h)
  *    -> where h is the height of the BST.
- *    -> In the best case (balanced tree): O(log n)
- *    -> In the worst case (skewed tree): O(n)
- * 
- * Space Complexity: O(h)
- *    -> due to recursive call stack (height of the tree).
- *    -> In the best case (balanced): O(log n)
- *    -> In the worst case (skewed): O(n)
+ *    -> Best Case (Balanced BST): O(log n)
+ *    -> Worst Case (Skewed BST):  O(n)
+ *
+ * Space Complexity: O(1)
+ *    -> No recursion or extra stack used (iterative solution).
  */
