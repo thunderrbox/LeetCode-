@@ -1,0 +1,30 @@
+-- Select required columns
+SELECT 
+    s.student_id,
+    s.student_name,
+    sub.subject_name,
+
+    -- Count how many times student attended this subject exam
+    COUNT(e.subject_name) AS attended_exams
+
+-- Start from Students table
+FROM Students s
+
+-- Create all possible combinations of students and subjects
+CROSS JOIN Subjects sub
+
+-- Match student and subject with examination records
+LEFT JOIN Examinations e
+ON s.student_id = e.student_id
+AND sub.subject_name = e.subject_name
+
+-- Group rows to calculate count for each student-subject pair
+GROUP BY 
+    s.student_id, 
+    s.student_name, 
+    sub.subject_name
+
+-- Sort output by student id and subject name
+ORDER BY 
+    s.student_id, 
+    sub.subject_name;
