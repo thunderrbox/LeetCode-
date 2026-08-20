@@ -1,0 +1,19 @@
+-- Write your PostgreSQL query statement below
+
+-- We use the Weather table twice:
+-- 'w' represents today's weather record
+-- 'l' represents yesterday's weather record
+
+SELECT w.id AS id
+
+FROM Weather w
+
+-- Match today's date with the previous day's date
+-- For example:
+-- 2015-01-02 (today) matches 2015-01-01 (yesterday)
+JOIN Weather l
+    ON w.recordDate = l.recordDate + INTERVAL '1 day'
+
+-- Return only those days where today's temperature
+-- is higher than yesterday's temperature
+WHERE w.temperature > l.temperature;
