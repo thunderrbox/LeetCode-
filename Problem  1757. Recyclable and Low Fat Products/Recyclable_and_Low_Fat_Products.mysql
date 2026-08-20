@@ -1,0 +1,23 @@
+# Write your MySQL query statement below
+
+SELECT product_id 
+FROM Products
+WHERE low_fats = 'Y' 
+    AND recyclable = 'Y';
+
+# Explanation:
+# SELECT product_id
+#     -> Selects the product_id column from the Products table.
+#
+# FROM Products
+#     -> Specifies that we are retrieving data from the Products table.
+#
+# WHERE low_fats = 'Y'
+#     -> Filters products that are low in fat.
+#     -> 'Y' means Yes.
+#
+# AND recyclable = 'Y'
+#     -> Further filters the products to include only recyclable products.
+#
+# Therefore, the query returns the product IDs of products that are
+# BOTH low-fat AND recyclable.
