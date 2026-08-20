@@ -1,0 +1,20 @@
+-- Calculate the average processing time for each machine
+SELECT 
+    a.machine_id,
+
+    -- timestamp difference = processing time
+    -- AVG() calculates the average across all processes
+    -- ROUND(..., 3) keeps 3 decimal places
+    ROUND(AVG(c.timestamp - a.timestamp)::numeric, 3) AS processing_time
+
+FROM Activity a
+
+-- Match each "start" activity with its corresponding "end" activity
+LEFT JOIN Activity c
+    ON a.machine_id = c.machine_id
+    AND a.process_id = c.process_id
+    AND a.activity_type = 'start'
+    AND c.activity_type = 'end'
+
+-- One result for each machine
+GROUP BY a.machine_id;
